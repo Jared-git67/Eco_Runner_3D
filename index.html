@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#030711" />
+    <meta
+      name="description"
+      content="Eco Runner 3D: un runner futurista en el que debes esquivar obstáculos y recolectar 15 cristales de energía."
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>Eco Runner 3D</title>
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="game-canvas" aria-label="Pista 3D de Eco Runner"></canvas>
+
+      <div class="fx-vignette" aria-hidden="true"></div>
+      <div class="fx-scanlines" aria-hidden="true"></div>
+      <div id="damage-flash" class="fx-damage" aria-hidden="true"></div>
+
+      <header id="hud" class="hud" aria-hidden="true">
+        <div class="hud-side hud-left">
+          <div class="stat-card">
+            <span class="stat-label">Puntuación</span>
+            <strong id="hud-score" class="stat-value">0</strong>
+          </div>
+          <div class="stat-card stat-card--distance">
+            <span class="stat-label">Distancia</span>
+            <strong id="hud-distance" class="stat-value">0 m</strong>
+          </div>
+        </div>
+
+        <div class="crystal-hud">
+          <div class="crystal-hud__top">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 2.5 20 9l-3.2 12.5L12 17l-4.8 4.5L4 9Z" />
+            </svg>
+            <span>Cristales</span>
+            <strong id="hud-crystals">0 / 15</strong>
+          </div>
+          <div class="meter" role="progressbar" aria-label="Cristales recolectados" aria-valuemin="0" aria-valuemax="15" aria-valuenow="0">
+            <div id="crystal-fill" class="meter__fill"></div>
+          </div>
+        </div>
+
+        <div class="hud-side hud-right">
+          <div id="lives" class="lives" aria-label="3 vidas restantes">
+            <span class="life" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 21s-8-4.7-8-11a4.6 4.6 0 0 1 8-3 4.6 4.6 0 0 1 8 3c0 6.3-8 11-8 11Z" /></svg>
+            </span>
+            <span class="life" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 21s-8-4.7-8-11a4.6 4.6 0 0 1 8-3 4.6 4.6 0 0 1 8 3c0 6.3-8 11-8 11Z" /></svg>
+            </span>
+            <span class="life" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 21s-8-4.7-8-11a4.6 4.6 0 0 1 8-3 4.6 4.6 0 0 1 8 3c0 6.3-8 11-8 11Z" /></svg>
+            </span>
+          </div>
+          <button id="btn-sound" class="icon-btn" type="button" aria-label="Silenciar sonido" title="Sonido (M)">
+            <svg class="icon-on" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9v6h4l5 4V5L8 9H4Z" />
+              <path class="stroke" d="M16 8.5a5 5 0 0 1 0 7M18.8 5.7a9 9 0 0 1 0 12.6" />
+            </svg>
+            <svg class="icon-off" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 9v6h4l5 4V5L8 9H4Z" />
+              <path class="stroke" d="m16 9 5 6M21 9l-5 6" />
+            </svg>
+          </button>
+          <button id="btn-pause" class="icon-btn" type="button" aria-label="Pausar partida" title="Pausa (Esc)">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="6" y="5" width="4" height="14" rx="1" />
+              <rect x="14" y="5" width="4" height="14" rx="1" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div id="overlay" class="overlay" aria-hidden="false">
+        <section id="screen-menu" class="screen is-active" aria-labelledby="menu-title">
+          <div class="panel panel--menu">
+            <p class="eyebrow"><span class="status-dot"></span> Sistema de energía en línea</p>
+            <h1 id="menu-title" class="logo" aria-label="Eco Runner 3D">
+              <span class="logo__eco">ECO</span><span class="logo__runner">RUNNER</span><span class="logo__3d">3D</span>
+            </h1>
+            <p class="tagline">
+              Corre por la red de neón, esquiva la seguridad corporativa y recolecta
+              <strong>15 cristales de energía</strong> para salvar el último refugio.
+            </p>
+
+            <div class="features">
+              <div class="feature">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5 20 9l-3.2 12.5L12 17l-4.8 4.5L4 9Z" /></svg>
+                <div><strong>15 cristales</strong><span>Objetivo de la misión</span></div>
+              </div>
+              <div class="feature">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-8-4.7-8-11a4.6 4.6 0 0 1 8-3 4.6 4.6 0 0 1 8 3c0 6.3-8 11-8 11Z" /></svg>
+                <div><strong>3 vidas</strong><span>Un impacto, una alarma</span></div>
+              </div>
+              <div class="feature">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18 9 4h6l6 14h-5l-.8-2.5H8.8L8 18H3Zm7-6.5h4L12 6l-2 5.5Z" /></svg>
+                <div><strong>Esquiva o salta</strong><span>La pista no perdona</span></div>
+              </div>
+            </div>
+
+            <button id="btn-play" class="btn btn--primary" type="button">
+              <span>Jugar</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7V5Z" /></svg>
+            </button>
+
+            <div class="controls-grid" aria-label="Controles de teclado">
+              <div><kbd>←</kbd><kbd>→</kbd><span>o</span><kbd>A</kbd><kbd>D</kbd><small>Cambiar carril</small></div>
+              <div><kbd>Espacio</kbd><span>o</span><kbd>↑</kbd><small>Saltar</small></div>
+              <div><kbd>Esc</kbd><small>Pausa</small></div>
+            </div>
+
+            <p id="best-menu" class="best-score">Récord: 0</p>
+          </div>
+          <p class="menu-footer">ENERGÍA LIMPIA · PISTA 07 · PROTOCOLO DE FUGA</p>
+        </section>
+
+        <section id="screen-pause" class="screen" aria-labelledby="pause-title">
+          <div class="panel panel--compact">
+            <p class="eyebrow"><span class="status-dot status-dot--amber"></span> Sistema en espera</p>
+            <h2 id="pause-title" class="screen-title">Pausa</h2>
+            <p class="screen-text">La pista está congelada. Tómate un segundo: el siguiente obstáculo no se moverá.</p>
+            <div class="actions">
+              <button id="btn-resume" class="btn btn--primary" type="button">Reanudar</button>
+              <button id="btn-restart-pause" class="btn btn--ghost" type="button">Reiniciar</button>
+              <button id="btn-menu-pause" class="btn btn--text" type="button">Volver al menú</button>
+            </div>
+            <p class="hint">Pulsa <kbd>Esc</kbd> para continuar</p>
+          </div>
+        </section>
+
+        <section id="screen-win" class="screen" aria-labelledby="win-title">
+          <div class="panel panel--compact panel--win">
+            <p class="eyebrow"><span class="status-dot"></span> Misión completada</p>
+            <h2 id="win-title" class="screen-title">Victoria</h2>
+            <p class="screen-text">Los cristales han reactivado el refugio. La red vuelve a brillar gracias a ti.</p>
+            <div class="result-stats">
+              <div><span>Puntuación</span><strong id="win-score">0</strong></div>
+              <div><span>Cristales</span><strong id="win-crystals">15 / 15</strong></div>
+              <div><span>Distancia</span><strong id="win-distance">0 m</strong></div>
+            </div>
+            <p id="win-best" class="best-score">Récord: 0</p>
+            <div class="actions">
+              <button id="btn-restart-win" class="btn btn--primary" type="button">Jugar de nuevo</button>
+              <button id="btn-menu-win" class="btn btn--text" type="button">Volver al menú</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="screen-lose" class="screen" aria-labelledby="lose-title">
+          <div class="panel panel--compact panel--lose">
+            <p class="eyebrow"><span class="status-dot status-dot--red"></span> Conexión perdida</p>
+            <h2 id="lose-title" class="screen-title">Derrota</h2>
+            <p class="screen-text">La seguridad de la red te ha alcanzado. Reinicia el protocolo y vuelve a intentarlo.</p>
+            <div class="result-stats">
+              <div><span>Puntuación</span><strong id="lose-score">0</strong></div>
+              <div><span>Cristales</span><strong id="lose-crystals">0 / 15</strong></div>
+              <div><span>Distancia</span><strong id="lose-distance">0 m</strong></div>
+            </div>
+            <p id="lose-best" class="best-score">Récord: 0</p>
+            <div class="actions">
+              <button id="btn-restart-lose" class="btn btn--primary" type="button">Reintentar</button>
+              <button id="btn-menu-lose" class="btn btn--text" type="button">Volver al menú</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div id="touch-controls" class="touch-controls" aria-hidden="true">
+        <div class="touch-group">
+          <button class="touch-btn" type="button" data-action="left" aria-label="Mover a la izquierda">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7V5Z" /></svg>
+          </button>
+          <button class="touch-btn" type="button" data-action="right" aria-label="Mover a la derecha">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7V5Z" /></svg>
+          </button>
+        </div>
+        <button class="touch-btn touch-btn--jump" type="button" data-action="jump" aria-label="Saltar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 4 7 7h-4v9H9v-9H5l7-7Z" /></svg>
+          <span>Saltar</span>
+        </button>
+      </div>
+
+      <noscript>
+        <p class="noscript">Eco Runner 3D necesita JavaScript para funcionar.</p>
+      </noscript>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
