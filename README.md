@@ -6,18 +6,6 @@ Runner futurista en tercera persona construido con **Three.js** y **Vite**. Reco
 
 Consigue **15 cristales** sin quedarte sin vidas. Cada cristal suma puntos, igual que la distancia recorrida; chocar contra un obstáculo resta una vida y penaliza la puntuación. Si llegas a la meta de cristales, ganas la partida y recibes una bonificación por cada vida restante.
 
-## Reglas
-
-- Empiezas con **3 vidas** y **0 cristales**.
-- Hay **15 cristales** repartidos por la pista. La partida termina en victoria al recoger el último.
-- Los cristales aparecen espaciados y nunca en el carril de un obstáculo cercano, para que siempre se puedan recoger sin arriesgar una vida.
-- Un impacto contra una barra o un bloque resta **1 vida**, aplica una penalización de **75 puntos** y concede **1,5 segundos de invulnerabilidad**. Durante ese tiempo el personaje parpadea y no puede recibir otro daño.
-- Puedes saltar por encima de las barreras bajas. Los bloques altos deben esquivarse cambiando de carril.
-- La velocidad base es de **24 m/s** y aumenta con la distancia hasta un máximo de **46 m/s**. Cuanto más avanzas, más seguidos aparecen los obstáculos.
-- La puntuación combina metros recorridos (1,25 puntos por metro), cristales (100 puntos cada uno), penalizaciones por choque y una bonificación de **250 puntos por vida** al ganar.
-- El récord se guarda en el almacenamiento local del navegador.
-- Al reiniciar se restablecen vidas, puntuación, distancia, cristales, obstáculos, cámara y todos los objetos de la escena.
-
 ## Controles
 
 ### Teclado
@@ -37,11 +25,6 @@ Consigue **15 cristales** sin quedarte sin vidas. Cada cristal suma puntos, igua
 - Desliza el dedo hacia la izquierda o la derecha sobre la pista para cambiar de carril.
 - Desliza hacia arriba para saltar.
 - También hay botones táctiles en pantalla para izquierda, derecha y salto.
-
-## Victoria y derrota
-
-- **Victoria:** recoges los 15 cristales. La pantalla final muestra la puntuación, los cristales, la distancia, el récord y la bonificación por vidas.
-- **Derrota:** pierdes las 3 vidas. Puedes reiniciar la partida o volver al menú desde la pantalla final.
 
 ## Tecnologías
 
